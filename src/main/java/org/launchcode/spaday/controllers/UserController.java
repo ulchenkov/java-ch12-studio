@@ -5,27 +5,45 @@ import org.launchcode.spaday.models.User;
 import org.springframework.boot.Banner;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.ArrayList;
 
 @Controller
 @RequestMapping("user")
 public class UserController {
 
     @GetMapping("add")
-    public String displayAddUserForm() {
+    public String displayAddUserForm(Model model) {
+        model.addAttribute("user", new User());
         return "user/add";
     }
 
     @PostMapping("add")
-    public String processAddUserForm(Model model, @ModelAttribute User user, String passwordVerify) {
-        if (user.getPassword().equals(passwordVerify)) {
-            UserData.add(user);
-            return "redirect:";
+    public String processAddUserForm(
+            Model model,
+            @ModelAttribute @Valid User user,
+            Errors errors,
+            String passwordVerify) {
+        ArrayList<String> errorMessages = new ArrayList<>();
+        if (errors.hasFieldErrors()) {
+            for(var error : errors.getFieldErrors()) {
+                errorMessages.add(error.getDefaultMessage());
+            }
         }
-        model.addAttribute("error", "Passwords should match!");
-        model.addAttribute("username", user.getUsername());
-        model.addAttribute("email", user.getEmail());
-        return "user/add";
+        if (!user.getPassword().equals(passwordVerify)) {
+            errorMessages.add("Passwords should match!");
+        }
+        if (errorMessages.size() > 0) {
+            model.addAttribute("errors", errorMessages);
+            model.addAttribute("username", user.getUsername());
+            model.addAttribute("email", user.getEmail());
+            return "user/add";
+        }
+        UserData.add(user);
+        return "redirect:";
     }
 
     @GetMapping
