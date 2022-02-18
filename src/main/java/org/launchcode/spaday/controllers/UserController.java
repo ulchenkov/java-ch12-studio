@@ -1,12 +1,11 @@
 package org.launchcode.spaday.controllers;
 
+import org.launchcode.spaday.data.UserData;
 import org.launchcode.spaday.models.User;
+import org.springframework.boot.Banner;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("user")
@@ -20,8 +19,8 @@ public class UserController {
     @PostMapping("add")
     public String processAddUserForm(Model model, @ModelAttribute User user, String passwordVerify) {
         if (user.getPassword().equals(passwordVerify)) {
-            model.addAttribute("username", user.getUsername());
-            return "user/index";
+            UserData.add(user);
+            return "redirect:";
         }
         model.addAttribute("error", "Passwords should match!");
         model.addAttribute("username", user.getUsername());
@@ -30,7 +29,14 @@ public class UserController {
     }
 
     @GetMapping
-    public String displayIndex() {
+    public String displayIndex(Model model) {
+        model.addAttribute("users", UserData.getAll());
         return "user/index";
+    }
+
+    @GetMapping("info/{id}")
+    public String displayInfo(Model model, @PathVariable Integer id) {
+        model.addAttribute("user", UserData.getById(id));
+        return "user/info";
     }
 }
