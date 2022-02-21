@@ -8,30 +8,32 @@
 </head>
 <body class="container">
     <h3>Add new user</h3>
-    <th:block th:if="${errors}">
-        <p th:each="error : ${errors}" class="alert alert-danger" th:text="${error}"></p>
-    </th:block>
 
     <form method="post">
         <div class="from-group">
             <label>Username
                 <input type="text" th:field="${user.username}" class="form-control">
             </label>
+            <p class="text-danger" th:errors="${user.username}"></p>
         </div>
         <div class="from-group">
             <label>E-mail
-                <input type="email" th:field="${user.email}" class="form-control">
+                <input type="text" th:field="${user.email}" class="form-control">
             </label>
+            <p class="text-danger" th:errors="${user.email}"></p>
         </div>
         <div class="from-group">
             <label>Password
-                <input type="password" th:value="${user.password}" class="form-control">
+                <input type="password" th:field="${user.password}" class="form-control">
             </label>
+            <p class="text-danger" th:errors="${user.password}"></p>
         </div>
         <div class="from-group">
             <label>Re-enter password
-                <input type="password" name="passwordVerify" class="form-control">
+<!--                <input type="password" name="passwordVerify" class="form-control">-->
+                <input type="password" th:field="${user.verifyPassword}" class="form-control">
             </label>
+                <p class="text-danger" th:errors="${user.verifyPassword}"></p>
         </div>
         <div class="form-group">
             <input type="submit" value="Add user" class="btn btn-success">

@@ -17,7 +17,7 @@ public class UserController {
 
     @GetMapping("add")
     public String displayAddUserForm(Model model) {
-        model.addAttribute("user", new User());
+        model.addAttribute(new User());
         return "user/add";
     }
 
@@ -27,21 +27,11 @@ public class UserController {
             @ModelAttribute @Valid User user,
             Errors errors,
             String passwordVerify) {
-        ArrayList<String> errorMessages = new ArrayList<>();
+
         if (errors.hasFieldErrors()) {
-            for(var error : errors.getFieldErrors()) {
-                errorMessages.add(error.getDefaultMessage());
-            }
-        }
-        if (!user.getPassword().equals(passwordVerify)) {
-            errorMessages.add("Passwords should match!");
-        }
-        if (errorMessages.size() > 0) {
-            model.addAttribute("errors", errorMessages);
-            model.addAttribute("username", user.getUsername());
-            model.addAttribute("email", user.getEmail());
             return "user/add";
         }
+
         UserData.add(user);
         return "redirect:";
     }
