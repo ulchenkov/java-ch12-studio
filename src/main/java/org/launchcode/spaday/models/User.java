@@ -82,7 +82,7 @@ public class User {
     }
 
     private void checkPassword() {
-        if (password == null || verifyPassword == null || !password.equals(verifyPassword)) {
+        if (password != null || verifyPassword != null && verifyPassword == null || !password.equals(verifyPassword)) {
             verifyPassword = null;
         }
     }
